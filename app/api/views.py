@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from api.serializers import ArtistSerializer
+from api.models import Artist
 
-# Create your views here.
+
+class ArtistViewSet(ModelViewSet):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
