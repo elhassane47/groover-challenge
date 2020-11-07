@@ -11,7 +11,7 @@ from api.serializers import ArtistSerializer
 from api.models import Artist
 from api.spotify_api import SpotifyApi
 from api.spotify_auth import SpotifyAuth
-from django.http.response import  HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 import pdb
 
 
@@ -34,14 +34,14 @@ class ArtistViewSet(ModelViewSet):
             data = sp.artists_new_relases()
 
         except HTTPError:
-            return Response(status=status.HTTP_401_UNAUTHORIZED,data={"message": "invalid spotify token"})
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={"message": "invalid spotify token"})
 
             # refresh_token = tokens.get('refresh_token')
             # token = self.auth_api.refreshAuth(refresh_token)
             # sp.set_token(token)
             # data = sp.artists_new_relases()
             # HttpResponseRedirect(redirect_to=reverse('api:spotify-login'))
-            # pdb.set_trace()
+        else:
             response = []
             errors = []
             for artist in data:
@@ -51,14 +51,17 @@ class ArtistViewSet(ModelViewSet):
                         serializer.save()
                     #     already existed artists with this spotify_id
                     except IntegrityError as e:
-                        errors.append(e)
+                        pass
 
                     else:
                         response.append(serializer.data)
                 else:
                     errors.append(serializer.errors)
 
-            return Response(status=200, data={"release": response})
+        if errors:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=200, data={"release": response})
 
 
 def callback(request):
