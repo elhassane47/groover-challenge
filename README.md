@@ -18,3 +18,40 @@ Feel free to move it and re-organise as you please, we expect a well organised a
 - As stated above, to test your server we will `GET /api/artists/` and we expect a nicely organised payload of artists. Make sure to use proper serialization and handle http errors.
 
 All stability, performance, efficiency adds-up are highly recommended.
+
+## Run project using virtualenv
+
+
+
+* env - using virtualenv here but any env manager should work
+
+      $ sudo apt install build-essential python3.7 python-dev python3.7-dev python3-venv python3-pip  # depends on distro/os a lot
+      $ pip3 install virtualenv
+      $ python3 -m virtualenv env
+      $ source env/bin/activate  
+      $ pip install -r requirements.txt  
+
+* Create postgresql database
+
+* add env variables
+     
+      $ export CLIENT_ID=spotify_client_id
+      $ export CLIENT_SECRET=spotify_secret_id
+      $ export POSTGRES_DB=db_name
+      $ export POSTGRES_USER=db_user
+      $ export POSTGRES_PASSWORD=db_password
+  
+
+* Create the sql tables
+
+      $ python manage.py migrate
+
+* Create a user
+	
+      $ python manage.py createsuperuser
+
+* Run the server on port 5000
+
+      $ python manage.py runserver 5000
+
+The website should be accessible at http://localhost:8000/  
