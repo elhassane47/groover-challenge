@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 
 class Artist(models.Model):
@@ -8,7 +9,7 @@ class Artist(models.Model):
     spotify_id = models.CharField(max_length=150, unique=True)
     type = models.CharField(max_length=100)
     uri = models.CharField(max_length=255)
-    external_urls = models.JSONField()
+    external_urls = JSONField()
 
     def __str__(self):
         return self.name
