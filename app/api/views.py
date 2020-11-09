@@ -21,7 +21,7 @@ class ArtistViewSet(ModelViewSet):
     auth_api = SpotifyAuth()
 
     @action(detail=False, methods=['GET'])
-    def new_realses(self, request):
+    def new_releases(self, request):
 
         tokens = request.session.get('tokens')
         # if the token expired in session =>redirect to login
@@ -42,26 +42,17 @@ class ArtistViewSet(ModelViewSet):
             # data = sp.artists_new_relases()
             # HttpResponseRedirect(redirect_to=reverse('api:spotify-login'))
         else:
-            response = []
-            errors = []
-            for artist in data:
-                serializer = ArtistSerializer(data=artist)
-                if serializer.is_valid():
-                    try:
-                        serializer.save()
-                    #     already existed artists with this spotify_id
-                    except IntegrityError as e:
-                        pass
-
-                    else:
-                        response.append(serializer.data)
-                else:
-                    errors.append(serializer.errors)
-
-        if errors:
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(status=200, data={"release": response})
+            serializer = ArtistSerializer(data=data, many=True)
+            if serializer.is_valid():
+                try:
+                    serializer.save()
+                #     already existed artists with this spotify_id
+                except IntegrityError as e:
+                    pass
+                finally:
+                    return Response(status=status.HTTP_201_CREATED, data={"new release": serializer.data})
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def callback(request):
@@ -84,9 +75,9 @@ def callback(request):
 
         return JsonResponse(
             status=status.HTTP_200_OK,
-            data={'message': "you are successfuly logged in to Spotify api",
+            data={'message': "you are successfully logged in Spotify api",
                   'tokens': resp,
-                  "new releases endpoint": reverse(('api:artists-new-realses'))})
+                  "new releases endpoint": reverse(('api:artists-new-releases'))})
 
 
 def login_spotify(request):
