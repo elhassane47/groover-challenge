@@ -54,4 +54,17 @@ All stability, performance, efficiency adds-up are highly recommended.
 
       $ python manage.py runserver 5000
 
-The website should be accessible at http://localhost:8000/  
+The website should be accessible at http://localhost:5000/  
+
+* login to spotify to get your access token
+
+ http://localhost:5000/login_spotify
+ 
+* get new releases
+
+ http://localhost:5000/artists/new_releases/
+ 
+* all artists :
+http://localhost:5000/artists
+
+
